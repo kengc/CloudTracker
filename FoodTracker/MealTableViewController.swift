@@ -130,7 +130,14 @@ class MealTableViewController: UITableViewController {
         
         
         cell.nameLabel.text = meal.name
-        cell.photoImageView.image = meal.photo
+        
+        if meal.photo == nil {
+            cell.photoImageView.image = UIImage(named: "defaultPhoto");
+        } else {
+            cell.photoImageView.image = meal.photo
+        }
+        
+       
         cell.ratingControl.rating = meal.rating
         
         // Configure the cell...
