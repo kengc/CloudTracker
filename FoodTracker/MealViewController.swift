@@ -126,13 +126,19 @@ class MealViewController: UIViewController, UITextFieldDelegate, UIImagePickerCo
             //print(nestedDict)
             //print(nestedDict["id"] as Any)
             let ratingId = nestedDict["meal"]
-            let id = ratingId?["id"]
-            print(id!)
+            let rateid = ratingId?["id"]
+            print(rateid!)
+            //meal.Id = rateid
             
-                // - key : id
-                //- value : 126
-            
+            self.meal?.Id = "\(rateid ?? "")"
+            self.meal?.rating = rating
             //save rating
+            
+
+            ct.saveRating(meal: self.meal!, completion: { (ratedDict ) -> (Void) in
+                  print(ratedDict)
+                })
+        
         })
 
     }

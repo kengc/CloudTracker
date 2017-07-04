@@ -57,7 +57,7 @@ class CloudTrackerAPI: NSObject{
                 print("an error occurred")
                 return
             }
-            //print(rawJSON)
+            print(rawJSON)
             DispatchQueue.main.async {
                 completion(rawJSON as! [[String:Any]])
             }
@@ -79,6 +79,11 @@ class CloudTrackerAPI: NSObject{
                 print("could not serialize JSON")
                 return
             }
+        
+        //        //Request: curl -H "token: anGfKOFTTtQ1xwEkkXjieC9K9s4UNu9y0J9BadGhUtE" -H "Content-Type: application/json" -d '{"rating": 5}' "http://localhost:8000/users/me/meals/1/rate"
+//        
+        //        Response: {"meal":{"calories":1500,"id":1,"description":"really good, from a local place","title":"tacos","userId":1,"rating":5,"imagePath":""}}
+        
         
             mealreq.httpBody = postJSON
             mealreq.httpMethod = "POST"
@@ -115,20 +120,76 @@ class CloudTrackerAPI: NSObject{
                 }
                 
                 completion(rawJSON as! [String:[String:Any]])
-//                DispatchQueue.main.async {
-//                    completion(rawJSON as! [String:[String:Any]])
-//                }
-                
                 
             }
             
             task.resume()
         }
+  
+    //////save rating .////////
     
+    func saveRating(meal: Meal, completion: @escaping ([String:[String:Any]])->(Void)){
+        // let upload = meal
+//        guard let rid = meal.Id else{
+//            return
+//        }
+        
+        let mealId = meal.Id
+        let urlString = "http://159.203.243.24:8000/users/me/meals/\(mealId)/rate"
+        
+        let mealreq = NSMutableURLRequest(url: URL(string:urlString)!)
+        let postData = ["rating":meal.rating] as [String: Any]
+        //"title":meal.Id, 
+        
+        guard let postJSON = try? JSONSerialization.data(withJSONObject: postData, options: [])else{
+            print("could not serialize JSON")
+            return
+        }
+        
+        mealreq.httpBody = postJSON
+        mealreq.httpMethod = "POST"
+        
+        let defaults = UserDefaults.standard
+        let token = defaults.value(forKey: "token") as! String
+        
+        mealreq.addValue(token, forHTTPHeaderField: "token")
+        mealreq.addValue("application/json", forHTTPHeaderField: "Content-type")
+        //mealreq.addValue(meal.Id, forHTTPHeaderField: ":id")
+        
+        let task = URLSession.shared.dataTask(with: mealreq as URLRequest) { (data, resp, err) in
+            
+            guard data != nil else {
+                print("no data returned from server \(String(describing: err))")
+                return
+            }
+            
+            guard let resp = resp as? HTTPURLResponse else {
+                print("no response returned from server \(String(describing: err))")
+                return
+            }
+            
+            guard let rawJSON = try? JSONSerialization.jsonObject(with: data!, options: []) else {
+                
+                print("data returned is not json, or not valid")
+                return
+            }
+            
+            guard resp.statusCode == 200 else {
+                // handle error
+                print("an error occurred")
+                return
+            }
+            
+            completion(rawJSON as! [String:[String:Any]])
+            
+        }
+        
+        task.resume()
+    }
     
 
 //    func login(data: [String: AnyObject], toEndpoint: String, completion: @escaping (Data?, NSError?)->(Void)){
-//        
+//
 //        guard let postJSON = try? JSONSerialization.data(withJSONObject: Data(), options: []) else {
 //            
 //            print("could not serialize json")
