@@ -123,11 +123,11 @@ class MealViewController: UIViewController, UITextFieldDelegate, UIImagePickerCo
         
         //question #1
         ct.saveMeal(meal: meal!, completion: { (nestedDict ) -> (Void) in
-            print(nestedDict)
-            print(nestedDict["id"])
-            let ratingId = nestedDict["id"]
-            
-            
+            //print(nestedDict)
+            //print(nestedDict["id"] as Any)
+            let ratingId = nestedDict["meal"]
+            let id = ratingId?["id"]
+            print(id!)
             
                 // - key : id
                 //- value : 126

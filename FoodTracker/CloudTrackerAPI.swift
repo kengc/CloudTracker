@@ -57,8 +57,11 @@ class CloudTrackerAPI: NSObject{
                 print("an error occurred")
                 return
             }
-            print(rawJSON)
-            completion(rawJSON as! [[String:Any]])
+            //print(rawJSON)
+            DispatchQueue.main.async {
+                completion(rawJSON as! [[String:Any]])
+            }
+            
             
         }
         
@@ -112,9 +115,9 @@ class CloudTrackerAPI: NSObject{
                 }
                 
                 completion(rawJSON as! [String:[String:Any]])
-                DispatchQueue.main.async {
-                    completion(rawJSON as! [String:[String:Any]])
-                }
+//                DispatchQueue.main.async {
+//                    completion(rawJSON as! [String:[String:Any]])
+//                }
                 
                 
             }
