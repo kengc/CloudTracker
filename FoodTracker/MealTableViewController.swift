@@ -16,6 +16,7 @@ class MealTableViewController: UITableViewController {
     //an array of meal objects: var = mutable
     var meals = [Meal]()
     
+    @IBOutlet var mealTable: UITableView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,45 +29,32 @@ class MealTableViewController: UITableViewController {
         // Load any saved meals, otherwise load sample data.
         //If loadMeals() successfully returns an array of Meal objects, this condition is true and the if statement gets executed. If loadMeals() returns nil, there were no meals to load and the if statement doesn’t get executed. This code adds any meals that were successfully loaded to the meals array.
         
-        let ct = CloudTrackerAPI()
+        loadShit()
         
-        //        guard let upload = meal else {
-        //            return
-        //        }
-        //question #1
-        ct.getMeal(completion: { (meals ) -> (Void) in
-            //let new = nestedDict
-            //print(nestedDict)
-            
-            
-            
-//            calories: Int
-//            description: String
-//            title: String
-//            imagePath: String - not a full url, just the path on this server. e.g. /photos/1D5EE0C4-A96E-4B44-9A7C-652E978B3CB5
-//            userId: Int
-//            id: Int
-//            rating: Int
-            
-            //it was an array of dictionaries
-            for meal in meals{
-                guard let meal = Meal(name: meal["title"] as! String,
-                                      photo: meal["imagePath"] as? UIImage,
-                                      rating: meal["rating"] as! Int,
-                                      calories:meal["calories"] as! Int,
-                                      itemDescription: meal["description"] as! String,
-                                      userId: "",
-                                      Id:String(meal["id"] as! Int)) else {
-                    fatalError("Unable to instantiate meal1")
-                }
-                self.meals += [meal]
-            }
-            
-            // - key : id
-            //- value : 126
-            
-            //save rating
-        })
+//        let ct = CloudTrackerAPI()
+//        
+//        //        guard let upload = meal else {
+//        //            return
+//        //        }
+//        //question #1
+//        
+//        ct.getMeal(completion: { (meals ) -> (Void) in
+// 
+//            //it was an array of dictionaries
+//            for meal in meals{
+//                guard let meal = Meal(name: meal["title"] as! String,
+//                                      photo: meal["imagePath"] as? UIImage,
+//                                      rating: meal["rating"] as! Int,
+//                                      calories:meal["calories"] as! Int,
+//                                      itemDescription: meal["description"] as! String,
+//                                      userId: "",
+//                                      Id:String(meal["id"] as! Int)) else {
+//                    fatalError("Unable to instantiate meal1")
+//                }
+//                self.meals += [meal]
+//            }
+//            
+//        })
 
         //old way of loading
 //        if let savedMeals = loadMeals() {
@@ -84,11 +72,32 @@ class MealTableViewController: UITableViewController {
 
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
 
+     func loadShit() {
+        
+        let ct = CloudTrackerAPI()
+        
+        ct.getMeal(completion: { (meals) -> (Void) in
+            
+            //it was an array of dictionaries
+            for meal in meals{
+                guard let meal = Meal(name: meal["title"] as! String,
+                                      photo: meal["imagePath"] as? UIImage,
+                                      rating: meal["rating"] as! Int,
+                                      calories:meal["calories"] as! Int,
+                                      itemDescription: meal["description"] as! String,
+                                      userId: "",
+                                      Id:String(meal["id"] as! Int)) else {
+                                        fatalError("Unable to instantiate meal1")
+                }
+                self.meals += [meal]
+            }
+          //self.mealTable.reloadData()
+        self.mealTable.performSelector(onMainThread: #selector(UITableView.reloadData), with: nil, waitUntilDone: true)
+        })
+        
+    }
+    
 // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -98,6 +107,7 @@ class MealTableViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
+        print(meals.count)
         return meals.count
     }
 

@@ -76,13 +76,7 @@ class CloudTrackerAPI: NSObject{
                 print("could not serialize JSON")
                 return
             }
-            
-//            guard let photo = upload.photo else{
-//                return
-//            }
-//            guard let data = UIImagePNGRepresentation(photo) else{
-//                return
-//            }
+        
             mealreq.httpBody = postJSON
             mealreq.httpMethod = "POST"
             
@@ -91,8 +85,7 @@ class CloudTrackerAPI: NSObject{
             
             mealreq.addValue(token, forHTTPHeaderField: "token")
             mealreq.addValue("application/json", forHTTPHeaderField: "Content-type")
-            
-            //req.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        
     
             let task = URLSession.shared.dataTask(with: mealreq as URLRequest) { (data, resp, err) in
     
@@ -117,8 +110,12 @@ class CloudTrackerAPI: NSObject{
                     print("an error occurred")
                     return
                 }
-    
+                
                 completion(rawJSON as! [String:[String:Any]])
+                DispatchQueue.main.async {
+                    completion(rawJSON as! [String:[String:Any]])
+                }
+                
                 
             }
             

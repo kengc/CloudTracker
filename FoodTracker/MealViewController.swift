@@ -121,9 +121,6 @@ class MealViewController: UIViewController, UITextFieldDelegate, UIImagePickerCo
         meal = Meal(name: name, photo: photo, rating: rating, calories: caloriesCount, itemDescription: itemDescription, userId: userId, Id: Id )
         let ct = CloudTrackerAPI()
         
-//        guard let upload = meal else {
-//            return
-//        }
         //question #1
         ct.saveMeal(meal: meal!, completion: { (nestedDict ) -> (Void) in
             print(nestedDict)
